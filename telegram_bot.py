@@ -1,17 +1,4 @@
-# -*- coding: utf-8 -*-
-"""
-Telegram Manager Bot — GG gateway style, wired to manager.py.
 
-Admin-only. Two jobs:
-  1. Customer keys (exactly like the GG file): Create Key / Revoke Key /
-     All Keys / Remain Status.
-  2. Main API Manager: see every slot (account file), select which ones
-     work in the main API (attach on/off), set each slot's limit,
-     Next API manual transfer, reset usage.
-
-Config (BOT_TOKEN / ADMIN_ID) is carried over from the GG file.
-Set DISABLE_TELEGRAM_BOT=1 to keep the bot off.
-"""
 
 import io
 import json
@@ -19,7 +6,7 @@ import os
 import threading
 
 import telebot
-from telebot.types import (
+from telebot.types import (and 
     ReplyKeyboardMarkup,
     KeyboardButton,
     InlineKeyboardMarkup,
