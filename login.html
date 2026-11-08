@@ -1,0 +1,18 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>FuHx LIKE API — Login</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#0a0f0a;color:#d7ffd7;font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;display:flex;min-height:100vh;align-items:center;justify-content:center;padding:16px}
+.card{background:#111811;border:1px solid #24402a;border-radius:14px;padding:28px;width:100%;max-width:380px;box-shadow:0 10px 40px rgba(0,0,0,.5)}
+h1{margin:0 0 4px;font-size:22px;color:#4ade80}.sub{color:#8fae97;font-size:13px;margin-bottom:18px}
+label{display:block;font-size:13px;color:#9fb3a5;margin:10px 0 6px}input{width:100%;padding:12px 14px;border-radius:10px;border:1px solid #2a4632;background:#0b120c;color:#eaffea;font-size:16px;outline:none}
+input:focus{border-color:#4ade80}button{width:100%;margin-top:16px;padding:12px;border:0;border-radius:10px;background:#22c55e;color:#04120a;font-weight:700;font-size:15px;cursor:pointer}
+button:hover{background:#4ade80}.err{background:#3a1414;border:1px solid #7f1d1d;color:#fca5a5;padding:10px 12px;border-radius:10px;font-size:13px;margin-bottom:12px}
+.note{margin-top:14px;font-size:12px;color:#7d9183;text-align:center}.note b{color:#c8e6cf}
+</style></head>
+<body><div class="card">
+<h1>🔐 FuHx LIKE API</h1><div class="sub">Dashboard login — UI password required.<br>API calls (/like etc.) do NOT need this.</div>
+{% if error %}<div class="err">{{ error }}</div>{% endif %}
+<form method="post" action="/ui/login"><label>Password</label><input type="password" name="password" placeholder="Enter UI password" autofocus required><button type="submit">Enter Dashboard →</button></form>
+<div class="note">Wrong password attempts are logged.</div>
+</div></body></html>
