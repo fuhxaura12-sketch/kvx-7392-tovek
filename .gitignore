@@ -1,0 +1,7 @@
+__pycache__/
+*.pyc
+tokens_cache/
+failed_accounts/
+data/
+ui_settings.json
+.env
