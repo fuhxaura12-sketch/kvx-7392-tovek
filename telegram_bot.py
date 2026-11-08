@@ -26,7 +26,7 @@ from telebot.types import (
     InlineKeyboardButton,
 )
 
-BOT_TOKEN = "8954451439:AAF4sPrktTWMl0F84qPCYUKtO6dCGgQnETw"
+BOT_TOKEN = "8954451439:AAETKKrn5CPuUMLGc71CHvyrpy64woxlRqE"
 ADMIN_ID = 7010003376  
 
 _started = False
