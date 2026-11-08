@@ -6,7 +6,7 @@ import os
 import threading
 
 import telebot
-from telebot.types import (and 
+from telebot.types import ( 
     ReplyKeyboardMarkup,
     KeyboardButton,
     InlineKeyboardMarkup,
