@@ -1,0 +1,268 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>FuHx LIKE API — Dashboard</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#070b08;color:#d7ffd7;font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
+.stickwrap{position:sticky;top:0;z-index:10}
+header{background:#0d150e;border-bottom:1px solid #22351f;padding:12px 16px;display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between}
+header h1{margin:0;font-size:18px;color:#4ade80}header .meta{font-size:12px;color:#9fb3a5}
+.topbar{background:#12200f;border-bottom:1px solid #22351f;padding:8px 16px;display:flex;flex-wrap:wrap;gap:8px 20px;font-size:13px}
+.topbar b{color:#4ade80}.topbar span{color:#c8d6cc}
+a.btn,button.btn{display:inline-block;text-decoration:none;border:0;cursor:pointer;padding:9px 14px;border-radius:10px;font-weight:700;font-size:13px}
+.btn-green{background:#22c55e;color:#04120a}.btn-green:hover{background:#4ade80}
+.btn-ghost{background:#1a2a1e;color:#d7ffd7;border:1px solid #2e4a35}.btn-red{background:#dc2626;color:#fff}
+.btn-small{padding:6px 10px;font-size:12px}.btn-copy{padding:4px 8px;font-size:11px;background:#1a2a1e;color:#9fb3a5;border:1px solid #2e4a35;border-radius:8px;cursor:pointer}
+main{max-width:1100px;margin:0 auto;padding:16px;display:grid;gap:16px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}@media(max-width:760px){.grid{grid-template-columns:1fr}}
+.card{background:#0f1711;border:1px solid #233a28;border-radius:14px;padding:16px}
+.card h2{margin:0 0 4px;font-size:16px;color:#eaffea}.card p.desc{margin:0 0 12px;color:#8fae97;font-size:12.5px;line-height:1.5}
+.step{display:inline-block;width:24px;height:24px;line-height:24px;text-align:center;border-radius:50%;background:#22c55e;color:#04120a;font-weight:800;font-size:13px;margin-right:8px}
+.stat{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}@media(max-width:760px){.stat{grid-template-columns:repeat(2,1fr)}}
+.stat div{background:#0a120b;border:1px solid #22351f;border-radius:12px;padding:12px;text-align:center}
+.stat b{display:block;font-size:22px;color:#4ade80}.stat span{font-size:12px;color:#9fb3a5}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:10px 0}
+label{font-size:13px;color:#b9cdbf}.switch{position:relative;width:48px;height:26px;display:inline-block;flex:none}
+.switch input{opacity:0;width:0;height:0}.slider{position:absolute;inset:0;background:#374151;border-radius:999px;transition:.2s;cursor:pointer}
+.slider:before{content:"";position:absolute;width:20px;height:20px;left:3px;top:3px;background:#fff;border-radius:50%;transition:.2s}
+.switch input:checked + .slider{background:#22c55e}.switch input:checked + .slider:before{transform:translateX(22px)}
+input[type=text],textarea{width:100%;padding:10px 12px;border-radius:10px;border:1px solid #2a4632;background:#0b120c;color:#eaffea;font-size:14px;outline:none;font-family:ui-monospace,Menlo,monospace}
+input[type=text]:focus,textarea:focus{border-color:#4ade80}
+input.search{max-width:260px}
+table{width:100%;border-collapse:collapse;font-size:13px}th,td{padding:8px 6px;border-bottom:1px solid #1e3325;text-align:left;vertical-align:middle}th{color:#9fb3a5;font-size:12px}
+.pbar{height:8px;background:#0a120b;border:1px solid #22351f;border-radius:99px;overflow:hidden;margin-top:5px;min-width:90px}
+.pbar div{height:100%;background:#22c55e}.pbar.low div{background:#eab308}.pbar.out div{background:#dc2626}
+#logs{background:#000;color:#33ff66;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12.5px;line-height:1.55;height:420px;overflow:auto;padding:12px;border-radius:12px;border:1px solid #1f3a24;white-space:pre-wrap;word-break:break-word}
+#logs .dim{color:#7d9183}.badge{display:inline-block;padding:3px 8px;border-radius:999px;font-size:11px;font-weight:700}
+.badge-on{background:#14532d;color:#86efac}.badge-off{background:#450a0a;color:#fca5a5}
+.toast{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);background:#14532d;border:1px solid #22c55e;color:#dcfce7;padding:10px 16px;border-radius:999px;font-size:13px;display:none;z-index:50;max-width:92vw;text-align:center}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.7);display:none;align-items:center;justify-content:center;z-index:40;padding:16px}
+.modal.open{display:flex}.modal .box{background:#0f1711;border:1px solid #2a4632;border-radius:14px;width:100%;max-width:640px;padding:18px}
+.modal textarea{height:280px;resize:vertical}
+.hint{font-size:12px;color:#7d9183;margin-top:6px}
+.dropzone{border:2px dashed #2e4a35;border-radius:12px;padding:18px;text-align:center;color:#9fb3a5;font-size:13px;cursor:pointer;background:#0b120c}
+.dropzone.over{border-color:#4ade80;color:#eaffea;background:#12200f}
+.upres{font-size:13px;line-height:1.7}.upres .ok{color:#86efac}.upres .bad{color:#fca5a5}
+.health{font-size:12px;color:#c8d6cc;white-space:nowrap}
+@media(max-width:760px){
+  table thead{display:none}
+  table tr{display:block;border:1px solid #233a28;border-radius:12px;margin-bottom:10px;padding:6px 10px}
+  table td{display:flex;justify-content:space-between;align-items:center;gap:10px;border-bottom:0;padding:6px 0}
+  table td:before{content:attr(data-label);color:#9fb3a5;font-size:12px;flex:none}
+  table td .row{margin:0}
+}
+</style></head>
+<body>
+<div class="stickwrap">
+<header><div><h1>⚡ FuHx LIKE API — Dashboard</h1><div class="meta" id="clock">—</div></div>
+<div style="display:flex;gap:8px"><button class="btn btn-ghost" onclick="loadAll()">↻ Refresh</button><a class="btn btn-ghost" href="/ui/logout">Logout</a></div></header>
+<div class="topbar"><span>Main API: <b id="topMain">—</b></span><span>Remain: <b id="topRemain">—</b></span><span>Today: <b id="topDaily">—</b></span></div>
+</div>
+<main>
+<div class="card"><div class="stat">
+<div><b id="sTokens">—</b><span>Total Tokens</span></div>
+<div><b id="sAccts">—</b><span>Total Accounts</span></div>
+<div><b id="sFiles">—</b><span>Account Files</span></div>
+<div><b id="sOb">—</b><span>OB Version</span></div>
+</div><p class="hint" id="sLast">Last refresh: —</p></div>
+
+<div class="card"><h2><span class="step">1</span>Main API Manager</h2><p class="desc">Main link একটাই: <code>/like?uid=..&amp;server_name=BD&amp;key=..</code> — call গুলো rotation pool-এর API গুলোতে ঘুরে ঘুরে যাবে। কারো limit শেষ হলে সে pool থেকে বেরিয়ে পেছনের API ঢুকবে। <b>Next API</b> = সামনের API-টা সবার পেছনে পাঠানো। 0 like গেলে limit কাটবে না।</p>
+<div class="row"><span class="badge badge-on" id="mgrCurrent">Current: —</span><span class="badge" id="mgrToday" style="background:#1a2a1e;color:#9fb3a5">📈 Daily: —</span><span class="badge" id="mgrRemain" style="background:#1a2a1e;color:#9fb3a5">Remain: —</span><button class="btn btn-green" onclick="mgrNext()">⏭️ Next API</button><button class="btn btn-ghost btn-small" onclick="mgrResetAll()">🔄 Reset All Usage</button><span id="mgrBackend" class="hint"></span></div>
+<div class="row"><label class="switch"><input type="checkbox" id="mgrAutoAttach"><span class="slider"></span></label><label>নতুন upload auto main API-তে attach হবে</label><label>Default limit:</label><input type="text" id="mgrDefLimit" style="max-width:80px"><label>🔄 Pool size:</label><input type="text" id="mgrPool" style="max-width:60px"><button class="btn btn-ghost btn-small" onclick="mgrSaveSettings()">💾 Save</button></div>
+<div class="row"><label class="switch"><input type="checkbox" id="mgrAlerts"><span class="slider"></span></label><label>Telegram admin alert (কোনো API / key-র limit শেষ হলে)</label></div>
+<div class="row"><a class="btn btn-ghost btn-small" href="/ui/api/backup">💾 Full Backup (ZIP)</a><input type="file" id="backupFile" accept=".zip" style="max-width:200px"><button class="btn btn-ghost btn-small" onclick="restoreBackup()">♻️ Restore Backup ZIP</button><a class="btn btn-ghost btn-small" href="/ui/api/manager/state-export">State only (JSON)</a><input type="file" id="mgrRestoreFile" accept=".json" style="max-width:180px"><button class="btn btn-ghost btn-small" onclick="mgrRestore()">♻️ Restore State</button></div>
+<div id="restoreResults"></div>
+<p class="hint">Full Backup ZIP = manager state + settings + সব account file + token + failed file। Restore করলে সব ফিরে আসবে।</p>
+<div class="row"><input type="text" class="search" id="slotSearch" placeholder="🔍 Search API — e.g. like5" oninput="filterSlots()"></div>
+<div style="overflow:auto"><table><thead><tr><th>API</th><th>Used / Limit</th><th>Remain</th><th>Health</th><th>Main-এ কাজ করবে</th><th>Limit Set</th><th>Action</th></tr></thead><tbody id="mgrBody"><tr><td colspan="7">Loading…</td></tr></tbody></table></div>
+<h3 style="margin:16px 0 6px;font-size:15px;color:#eaffea">🔑 Customer Keys</h3>
+<div class="row"><input type="text" id="keyName" placeholder="Key name (e.g. VIP_User1)" style="max-width:200px"><input type="text" id="keyType" placeholder="r1 / r2" style="max-width:80px"><input type="text" id="keyLimit" placeholder="Limit" style="max-width:90px"><input type="text" id="keyDur" placeholder="Duration: no / 1d / 1w / 1m" style="max-width:190px"><button class="btn btn-green" onclick="mgrCreateKey()">➕ Create Key</button></div>
+<p class="hint">r1 = রোজ 04:00 AM-এ used reset হয় • r2 = reset হয় না। Master key-র নামে key বানানো যাবে না।</p>
+<div class="row"><input type="text" class="search" id="keySearch" placeholder="🔍 Search key name" oninput="filterKeys()"></div>
+<div style="overflow:auto"><table><thead><tr><th>Key</th><th>Type</th><th>Used / Limit</th><th>Expiry</th><th>Last Used</th><th>Action</th></tr></thead><tbody id="keyBody"><tr><td colspan="6">Loading…</td></tr></tbody></table></div></div>
+
+<div class="card"><h2><span class="step">2</span>Account Files — Upload &amp; Manage</h2><p class="desc">একসাথে অনেকগুলো account file দাও — প্রতিটা file আলাদা API (slot) হয়ে যাবে, যেমন <code>myaccs.txt → /like5</code>। Upload দিলেই প্রতি file-এর FORCE JWT GEN auto চলবে। নিচের link গুলো <b>direct</b> per-file — main API হলো উপরের <code>/like</code> gateway।</p>
+<div class="dropzone" id="dropZone">📂 এখানে .txt / .json file গুলো টেনে ছাড়ো — অথবা ক্লিক করে choose করো<input type="file" id="uploadFile" accept=".txt,.json" multiple style="display:none"></div>
+<div class="row" id="uploadTargetWrap" style="display:none"><label>Save as (শুধু ১টা ফাইলের জন্য):</label><input type="text" id="uploadTarget" placeholder="e.g. account5.txt" style="max-width:260px"></div>
+<div class="row"><button class="btn btn-green" onclick="uploadFile()">📤 Upload + Auto FORCE JWT GEN</button><span class="hint" id="uploadPicked"></span></div>
+<div class="upres" id="uploadResults"></div>
+<div class="row"><input type="text" id="newFile" placeholder="e.g. account100.txt  (or account.txt)" style="max-width:260px"><button class="btn btn-green" onclick="createFile()">＋ Add Empty File</button></div>
+<div style="overflow:auto"><table><thead><tr><th>File</th><th>Accounts</th><th>Tokens</th><th>Endpoint</th><th>Action</th></tr></thead><tbody id="acctBody"><tr><td colspan="5">Loading…</td></tr></tbody></table></div>
+<p class="hint">Delete করলে ওই ফাইলের token cache-ও মুছে যাবে। Edit-এ প্রতি লাইনে <code>uid:password</code> লিখতে হবে।</p></div>
+
+<div class="grid">
+<div class="card"><h2><span class="step">3</span>JWT Auto-Generate</h2><p class="desc">6h পর পর + রাত 3:00 (BD) force refresh — দুইটাই এখান থেকে OFF করা যায়। OFF করলে permanent OFF (restart-এর পরেও OFF থাকবে)।</p>
+<div class="row"><label class="switch"><input type="checkbox" id="tAuto"><span class="slider"></span></label><label>6-hour auto-refresh (JWT generate)</label><span class="badge badge-on" id="bAuto">ON</span></div>
+<div class="row"><label class="switch"><input type="checkbox" id="tForce"><span class="slider"></span></label><label>03:00 BDT force refresh (রাত 3টা)</label><span class="badge badge-on" id="bForce">ON</span></div>
+<button class="btn btn-green" onclick="saveToggles()">💾 Save Toggles</button>
+<p class="hint">Tip: OFF করলে আর auto JWT generate হবে না — শুধু Manual Refresh বাটন চাপলে হবে।</p></div>
+
+<div class="card"><h2><span class="step">4</span>JWT API URL</h2><p class="desc">UI থেকে JWT API change করো। Save করলেই পরের JWT fetch থেকে নতুন URL ব্যবহার হবে।</p>
+<input type="text" id="jwtUrl" placeholder="http://.../jwt">
+<div class="row"><button class="btn btn-green" onclick="saveJwt()">💾 Save JWT URL</button><button class="btn btn-ghost" onclick="manualRefresh()">🔄 Manual Refresh Now</button></div>
+<p class="hint">Format: <code>?uid=...&amp;password=...</code> — API-কে এইভাবে call করা হয়।</p></div>
+</div>
+
+<div class="card"><h2><span class="step">5</span>Failed Accounts</h2><p class="desc">JWT fail হওয়া account গুলো এখানে দেখাবে। Retry চাপলে ওই file-এর JWT আবার generate হবে। List-এ শুধু UID দেখায় — full <code>uid:password</code> লাগলে Download চাপো।</p>
+<div class="row"><span class="badge badge-off" id="failTotal">0 failed</span><button class="btn btn-ghost btn-small" onclick="loadFailed()">↻ Reload Failed</button></div>
+<div id="failedBody" style="font-size:13px;color:#c8d6cc">Loading…</div></div>
+
+<div class="card"><h2><span class="step">6</span>Live Logs</h2><p class="desc">Server-এ এখন কি হইতাছে — JWT generate, refresh, like send, error — সব এখানে live আসবে।</p>
+<div class="row"><label><input type="checkbox" id="autoLog" checked> Auto-refresh (10s, tab লুকালে pause)</label><label><input type="checkbox" id="autoScroll" checked> Auto-scroll</label><button class="btn btn-ghost btn-small" onclick="clearLogs()">Clear view</button><span class="badge badge-on" id="logCount">0 logs</span></div>
+<div id="logs">Connecting…</div></div>
+</main>
+
+<div class="modal" id="editModal"><div class="box"><h2 style="margin:0 0 8px" id="editTitle">Edit</h2>
+<textarea id="editArea" placeholder="uid:password&#10;uid:password"></textarea>
+<div class="row" style="justify-content:flex-end"><button class="btn btn-ghost" onclick="closeEdit()">Cancel</button><button class="btn btn-green" onclick="saveEdit()">💾 Save</button></div>
+<p class="hint" id="editHint"></p></div></div>
+<div class="toast" id="toast"></div>
+<script>
+let editing=null, lastLogsText=null, dashCache=null;
+let jwtDirty=false, toggleDirty=false, mgrDirty={};
+function esc(s){return String(s??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;')}
+function setVal(id,v,key){const el=document.getElementById(id);if(!el)return;if(key&&mgrDirty[key])return;if(document.activeElement===el)return;el.value=v}
+function setChecked(id,v,key){const el=document.getElementById(id);if(!el)return;if(key&&mgrDirty[key])return;if(document.activeElement===el)return;el.checked=!!v}
+function snapInputs(tbody){const snap={focusId:null,focusVal:null,selStart:null,selEnd:null,vals:{}};if(!tbody)return snap;tbody.querySelectorAll('input').forEach(el=>{if(el.id&&el.type==='text')snap.vals[el.id]=el.value});const ae=document.activeElement;if(ae&&tbody.contains(ae)&&ae.id){snap.focusId=ae.id;if(ae.type==='text'){snap.focusVal=ae.value;try{snap.selStart=ae.selectionStart;snap.selEnd=ae.selectionEnd}catch(e){}}}return snap}
+function restoreSnap(tbody,snap){if(!tbody||!snap)return;for(const id in snap.vals){const el=document.getElementById(id);if(el&&el.type==='text')el.value=snap.vals[id]}if(snap.focusId){const el=document.getElementById(snap.focusId);if(el){el.focus();if(snap.focusVal!==null&&snap.focusVal!==undefined&&el.type==='text'){el.value=snap.focusVal;try{if(snap.selStart!==null&&snap.selStart!==undefined)el.setSelectionRange(snap.selStart,snap.selEnd)}catch(e){}}}}}
+document.addEventListener('DOMContentLoaded',()=>{
+  const j=document.getElementById('jwtUrl');if(j)j.addEventListener('input',()=>{jwtDirty=true});
+  for(const id of ['tAuto','tForce']){const el=document.getElementById(id);if(el)el.addEventListener('change',()=>{toggleDirty=true})}
+  for(const id of ['mgrDefLimit','mgrPool']){const el=document.getElementById(id);if(el)el.addEventListener('input',()=>{mgrDirty[id]=true})}
+  for(const id of ['mgrAutoAttach','mgrAlerts']){const el=document.getElementById(id);if(el)el.addEventListener('change',()=>{mgrDirty[id]=true})}
+  document.addEventListener('click',e=>{const b=e.target&&e.target.closest?e.target.closest('[data-act]'):null;if(!b)return;const act=b.dataset.act,n=b.dataset.n?parseInt(b.dataset.n):null;
+    if(act==='copy')copyText(b.dataset.text||'');
+    else if(act==='revoke')mgrRevokeKey(b.dataset.name||'');
+    else if(act==='forcegen')forceGen(b.dataset.file||'');
+    else if(act==='edit')openEdit(b.dataset.file||'');
+    else if(act==='delfile')delFile(b.dataset.file||'');
+    else if(act==='retry')retryFailed(b.dataset.source||'');
+    else if(act==='setlimit')mgrSetLimit(n);
+    else if(act==='resetslot')mgrResetSlot(n);
+    else if(act==='move')mgrMove(n,parseInt(b.dataset.dir||'0'));
+    else if(act==='test')mgrTest(n);});
+  const dz=document.getElementById('dropZone'),inp=document.getElementById('uploadFile');
+  dz.addEventListener('click',()=>inp.click());
+  inp.addEventListener('change',onUploadPick);
+  dz.addEventListener('dragover',e=>{e.preventDefault();dz.classList.add('over')});
+  dz.addEventListener('dragleave',()=>dz.classList.remove('over'));
+  dz.addEventListener('drop',e=>{e.preventDefault();dz.classList.remove('over');if(e.dataTransfer&&e.dataTransfer.files&&e.dataTransfer.files.length){inp.files=e.dataTransfer.files;onUploadPick()}});
+});
+function onUploadPick(){const inp=document.getElementById('uploadFile');const n=inp.files?inp.files.length:0;document.getElementById('uploadPicked').textContent=n?n+' file(s) selected':'';
+  document.getElementById('uploadTargetWrap').style.display=(n===1)?'flex':'none';}
+function toast(m,ok=true){const t=document.getElementById('toast');t.textContent=m;t.style.display='block';t.style.background=ok?'#14532d':'#450a0a';setTimeout(()=>t.style.display='none',3200)}
+function copyText(txt){const done=()=>toast('Copied: '+txt);
+  if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(txt).then(done).catch(()=>fallbackCopy(txt,done));}
+  else fallbackCopy(txt,done)}
+function fallbackCopy(txt,done){const ta=document.createElement('textarea');ta.value=txt;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.select();let ok=false;try{ok=document.execCommand('copy')}catch(e){ok=false}document.body.removeChild(ta);if(ok)done();else toast('Copy failed — select and copy manually',false)}
+async function api(p,opt={}){const r=await fetch(p,{...opt,headers:{'Content-Type':'application/json',...(opt.headers||{})}});let j={};try{j=await r.json()}catch(e){}if(!r.ok)throw new Error(j.error||('HTTP '+r.status));return j}
+function setToggle(id,badge,on){const el=document.getElementById(id);if(el)el.checked=!!on;const b=document.getElementById(badge);if(!b)return;b.textContent=on?'ON':'OFF';b.className='badge '+(on?'badge-on':'badge-off')}
+function healthBadge(n,accounts,tests){
+  const file=n===0?'account.txt':'account'+n+'.txt';
+  const a=(accounts||[]).find(x=>x.file===file);
+  const toks=a?a.tokens:0;
+  const t=(tests||{})[n]||(tests||{})[String(n)];
+  const tb=t?(t.running?' 🧪…':(t.ok?' 🧪✅':' 🧪❌')):' 🧪—';
+  return '<span class="health">🎫 '+toks+' tokens'+tb+'</span>';
+}
+function renderDashboard(j){
+  if(!j||typeof j!=='object'||!j.status||!j.manager||!j.failed){toast('Dashboard data incomplete — showing last good data',false);return}
+  dashCache=j;
+  const s=j.status,m=j.manager,f=j.failed;
+  s.accounts=Array.isArray(s.accounts)?s.accounts:[];
+  m.slots=Array.isArray(m.slots)?m.slots:[];
+  m.pool=Array.isArray(m.pool)?m.pool:[];
+  m.keys=Array.isArray(m.keys)?m.keys:[];
+  m.settings=(m.settings&&typeof m.settings==='object')?m.settings:{};
+  m.tests=(m.tests&&typeof m.tests==='object')?m.tests:{};
+  if(typeof m.remain!=='number')m.remain=0;
+  if(typeof m.total_limit!=='number')m.total_limit=0;
+  if(typeof m.global_used!=='number')m.global_used=0;
+  if(typeof s.total_tokens!=='number')s.total_tokens=0;
+  if(typeof s.total_accounts!=='number')s.total_accounts=0;
+  document.getElementById('clock').textContent=s.time_bd+' • JWT: '+s.jwt_api_url;
+  document.getElementById('sTokens').textContent=s.total_tokens;
+  document.getElementById('sAccts').textContent=s.total_accounts;
+  document.getElementById('sFiles').textContent=s.accounts.length;
+  document.getElementById('sOb').textContent=s.ob_version;
+  document.getElementById('sLast').textContent='Last refresh: '+(s.last_refresh||'—');
+  if(!jwtDirty)setVal('jwtUrl',s.jwt_api_url);
+  if(!toggleDirty){setToggle('tAuto','bAuto',s.auto_refresh_enabled);setToggle('tForce','bForce',s.force_refresh_0300_enabled);}
+  const pool=m.pool||[];
+  document.getElementById('topMain').textContent=pool.length?('/like'+pool[0]):'— none —';
+  document.getElementById('topRemain').textContent=m.remain+'/'+m.total_limit;
+  document.getElementById('topDaily').textContent=m.global_used;
+  document.getElementById('mgrCurrent').textContent='🔄 Pool: '+(pool.length?pool.map(x=>'/like'+x).join(' • '):'— none —');
+  setVal('mgrPool',m.settings.pool_size||3,'mgrPool');
+  document.getElementById('mgrRemain').textContent='Remain (attached): '+m.remain+'/'+m.total_limit;
+  document.getElementById('mgrToday').textContent='📈 Daily successful: '+m.global_used;
+  document.getElementById('mgrBackend').textContent='State: '+m.backend;
+  setChecked('mgrAutoAttach',!!m.settings.auto_attach_new,'mgrAutoAttach');
+  setChecked('mgrAlerts',m.settings.alerts_enabled!==false,'mgrAlerts');
+  setVal('mgrDefLimit',m.settings.default_limit,'mgrDefLimit');
+  const mb=document.getElementById('mgrBody');
+  const mbSnap=snapInputs(mb);
+  {
+    mb.innerHTML=m.slots.length?m.slots.map(sl=>{
+      const pct=sl.limit?Math.min(100,Math.round(sl.used/sl.limit*100)):0;
+      const cls=pct>=100?'out':(pct>=80?'low':'');
+      const ep='/like'+sl.n;
+      return '<tr data-search="'+ep+'"><td data-label="API"><b>'+ep+'</b> '+(sl.in_pool?' 🔄':'')+' <button class="btn-copy" data-act="copy" data-text="'+ep+'">📋 Copy</button></td><td data-label="Used / Limit">'+sl.used+'/'+sl.limit+'<div class="pbar '+cls+'"><div style="width:'+pct+'%"></div></div></td><td data-label="Remain">'+sl.remain+'</td><td data-label="Health">'+healthBadge(sl.n,s.accounts,m.tests)+'</td><td data-label="Main"><label class="switch"><input type="checkbox" '+(sl.attached?'checked':'')+' onchange="mgrToggle('+sl.n+',this.checked)"><span class="slider"></span></label></td><td data-label="Limit"><input type="text" id="mgrLim'+sl.n+'" value="'+sl.limit+'" style="max-width:70px;padding:6px 8px"></td><td data-label="Action"><button class="btn btn-ghost btn-small" data-act="setlimit" data-n="'+sl.n+'">Set</button> <button class="btn btn-ghost btn-small" data-act="resetslot" data-n="'+sl.n+'">Reset</button> <button class="btn btn-ghost btn-small" data-act="move" data-n="'+sl.n+'" data-dir="-1">⬆️</button> <button class="btn btn-ghost btn-small" data-act="move" data-n="'+sl.n+'" data-dir="1">⬇️</button> <button class="btn btn-ghost btn-small" data-act="test" data-n="'+sl.n+'">🧪 Test</button></td></tr>'}).join(''):'<tr><td colspan="7">No account files yet — Upload one below.</td></tr>';
+  }
+  restoreSnap(mb,mbSnap);
+  const kb=document.getElementById('keyBody');
+  const kbSnap=snapInputs(kb);
+  {
+    kb.innerHTML=m.keys&&m.keys.length?m.keys.map(k=>'<tr data-search="'+esc(k.name)+'"><td data-label="Key"><code>'+esc(k.name)+'</code> <button class="btn-copy" data-act="copy" data-text="'+esc(k.name)+'">📋 Copy</button></td><td data-label="Type">'+esc(k.type||'')+'</td><td data-label="Used / Limit">'+k.used+'/'+k.limit+'</td><td data-label="Expiry">'+esc(k.expiry||'')+'</td><td data-label="Last Used">'+esc(k.last_used||'—')+'</td><td data-label="Action"><button class="btn btn-red btn-small" data-act="revoke" data-name="'+esc(k.name)+'">Revoke</button></td></tr>').join(''):'<tr><td colspan="6">No customer keys yet — উপরে বানাও অথবা Telegram bot দিয়ে।</td></tr>';
+  }
+  restoreSnap(kb,kbSnap);
+  const tb=document.getElementById('acctBody');
+  const tbSnap=snapInputs(tb);
+  {
+    tb.innerHTML=s.accounts.length?s.accounts.map(a=>{const ep=a.file==='account.txt'?'/like0':'/like'+a.number;return '<tr><td data-label="File"><b>'+esc(a.file)+'</b></td><td data-label="Accounts">'+a.accounts+'</td><td data-label="Tokens">'+a.tokens+'</td><td data-label="Endpoint"><code>'+ep+'</code> <button class="btn-copy" data-act="copy" data-text="'+ep+'">📋 Copy</button></td><td data-label="Action"><button class="btn btn-green btn-small" data-act="forcegen" data-file="'+esc(a.file)+'">⚡ FORCE JWT GEN</button> <button class="btn btn-ghost btn-small" data-act="edit" data-file="'+esc(a.file)+'">View / Edit</button> <button class="btn btn-red btn-small" data-act="delfile" data-file="'+esc(a.file)+'">Delete</button></td></tr>'}).join(''):'<tr><td colspan="5">No account files yet — Upload one above.</td></tr>';
+  }
+  restoreSnap(tb,tbSnap);
+  renderFailed(f);
+  filterSlots();filterKeys();
+}
+function renderFailed(j){
+  j=(j&&typeof j==='object')?j:{};
+  document.getElementById('failTotal').textContent=((typeof j.total_failed==='number'?j.total_failed:0))+' failed';
+  const el=document.getElementById('failedBody');
+  const list=Array.isArray(j.failed)?j.failed:[];
+  if(!list.length){el.innerHTML='<span style="color:#7d9183">No failed accounts — সব JWT OK ✅</span>';return}
+  el.innerHTML=list.map(f=>{f=(f&&typeof f==='object')?f:{};const uids=Array.isArray(f.uids)?f.uids:[];const src=f.source||'';const file=f.file||'';const dl=file?'<a class="btn btn-ghost btn-small" href="/ui/api/failed/'+encodeURIComponent(file)+'">⬇ Download</a>':'';return '<div style="border:1px solid #4a2323;border-radius:10px;padding:10px;margin:8px 0;background:#1a0d0d"><b>'+esc(src)+'</b> — '+(f.count||0)+' failed <span style="color:#8fae97;font-size:12px">('+esc(f.updated||'')+')</span> <span style="float:right"><button class="btn btn-green btn-small" data-act="retry" data-source="'+esc(src)+'">🔁 Retry</button> '+dl+'</span><div style="max-height:140px;overflow:auto;margin-top:8px;font-family:ui-monospace,monospace;font-size:12px;line-height:1.6">'+uids.map(u=>'<span style="display:inline-block;background:#2a1212;border:1px solid #4a2323;border-radius:6px;padding:2px 7px;margin:2px">'+esc(u)+'</span>').join('')+'</div></div>'}).join('');
+}
+async function loadDashboard(){if(document.hidden)return;try{const j=await api('/ui/api/dashboard');renderDashboard(j)}catch(e){toast('Dashboard load failed: '+e.message,false)}}
+async function loadAll(){await loadDashboard()}
+async function loadManager(){await loadDashboard()}
+async function loadFailed(){try{if(dashCache){renderFailed(dashCache.failed);return}await loadDashboard()}catch(e){toast('Failed list load failed: '+e.message,false)}}
+function filterSlots(){const q=(document.getElementById('slotSearch').value||'').toLowerCase();document.querySelectorAll('#mgrBody tr[data-search]').forEach(tr=>{tr.style.display=!q||tr.dataset.search.toLowerCase().includes(q)?'':'none'})}
+function filterKeys(){const q=(document.getElementById('keySearch').value||'').toLowerCase();document.querySelectorAll('#keyBody tr[data-search]').forEach(tr=>{tr.style.display=!q||tr.dataset.search.toLowerCase().includes(q)?'':'none'})}
+async function saveToggles(){try{await api('/ui/api/settings',{method:'POST',body:JSON.stringify({auto_refresh_enabled:document.getElementById('tAuto').checked,force_refresh_0300_enabled:document.getElementById('tForce').checked})});toggleDirty=false;toast('Toggles saved ✅');loadAll()}catch(e){toast(e.message,false)}}
+async function saveJwt(){const u=document.getElementById('jwtUrl').value.trim();if(!u.startsWith('http')){toast('JWT URL must start with http',false);return}try{await api('/ui/api/settings',{method:'POST',body:JSON.stringify({jwt_api_url:u})});jwtDirty=false;toast('JWT API URL saved ✅');loadAll()}catch(e){toast(e.message,false)}}
+async function manualRefresh(){try{const r=await api('/ui/api/refresh',{method:'POST',body:'{}'});toast(r.msg)}catch(e){toast(e.message,false)}}
+async function createFile(){const f=document.getElementById('newFile').value.trim();if(!f){toast('File name দাও — e.g. account100.txt',false);return}try{await api('/ui/api/accounts',{method:'POST',body:JSON.stringify({file:f,content:''})});toast(f+' created ✅');document.getElementById('newFile').value='';loadAll()}catch(e){toast(e.message,false)}}
+async function openEdit(f){try{const j=await api('/ui/api/accounts/'+encodeURIComponent(f));editing=f;document.getElementById('editTitle').textContent='Edit '+f;document.getElementById('editArea').value=j.content||'';document.getElementById('editHint').textContent=j.accounts+' accounts • '+j.tokens+' tokens';document.getElementById('editModal').classList.add('open')}catch(e){toast(e.message,false)}}
+function closeEdit(){editing=null;document.getElementById('editModal').classList.remove('open')}
+async function saveEdit(){if(!editing)return;try{const c=document.getElementById('editArea').value;const j=await api('/ui/api/accounts/'+encodeURIComponent(editing),{method:'PUT',body:JSON.stringify({content:c})});toast(editing+' saved — '+j.accounts+' accounts ✅');closeEdit();loadAll()}catch(e){toast(e.message,false)}}
+async function delFile(f){if(!confirm(f+' delete করবা? Token cache-ও মুছে যাবে।'))return;try{await api('/ui/api/accounts/'+encodeURIComponent(f),{method:'DELETE'});toast(f+' deleted ✅');loadAll()}catch(e){toast(e.message,false)}}
+async function forceGen(f){try{const r=await api('/ui/api/accounts/'+encodeURIComponent(f)+'/force-gen',{method:'POST',body:'{}'});toast(r.msg)}catch(e){toast(e.message,false)}}
+async function uploadFile(){const inp=document.getElementById('uploadFile');if(!inp.files||!inp.files.length){toast('আগে .txt / .json ফাইল choose করো',false);return}const fd=new FormData();for(const f of inp.files)fd.append('file',f);const tgt=document.getElementById('uploadTarget').value.trim();if(tgt&&inp.files.length===1)fd.append('target',tgt);try{const r=await fetch('/ui/api/accounts/upload',{method:'POST',body:fd});const j=await r.json();if(!r.ok)throw new Error(j.error||('HTTP '+r.status));let html='';if(j.results)html+=j.results.map(x=>'<div class="ok">✅ '+esc(x.from)+' → <b>'+esc(x.file)+'</b> ('+esc(x.endpoint)+') — '+x.accounts+' accounts — GEN queued'+(x.replaced?' (replaced)':'')+'</div>').join('');if(j.errors&&j.errors.length)html+=j.errors.map(e=>'<div class="bad">❌ '+esc(e.file)+': '+esc(e.error)+'</div>').join('');document.getElementById('uploadResults').innerHTML=html;toast(j.msg+' ✅');inp.value='';document.getElementById('uploadTarget').value='';document.getElementById('uploadPicked').textContent='';onUploadPick();loadAll()}catch(e){toast(e.message,false)}}
+async function retryFailed(src){try{const r=await api('/ui/api/failed/'+encodeURIComponent(src)+'/retry',{method:'POST',body:'{}'});toast(r.msg)}catch(e){toast(e.message,false)}}
+async function restoreBackup(){const inp=document.getElementById('backupFile');const box=document.getElementById('restoreResults');if(!inp.files||!inp.files[0]){toast('আগে backup .zip file choose করো',false);return}if(!confirm('Full backup restore করলে এখনকার account/key/limit/setting বদলে যাবে। নিশ্চিত?'))return;const fd=new FormData();fd.append('file',inp.files[0]);try{const r=await fetch('/ui/api/backup/restore',{method:'POST',body:fd});const j=await r.json();if(!r.ok)throw new Error(j.error||('HTTP '+r.status));let html='<div class="ok">✅ '+esc(j.msg||'Restored')+'</div>';if(j.errors&&j.errors.length)html+=j.errors.map(e=>'<div class="bad">❌ '+esc(e.file||'')+': '+esc(e.error||'')+'</div>').join('');if(box)box.innerHTML=html;toast(j.msg);inp.value='';loadAll()}catch(e){if(box)box.innerHTML='<div class="bad">❌ '+esc(e.message)+'</div>';toast(e.message,false)}}
+async function loadLogs(){if(document.hidden)return;if(!document.getElementById('autoLog').checked)return;try{const j=await api('/ui/api/logs?limit=200');const text=j.logs.join('\n')||'(no logs yet)';if(text===lastLogsText){document.getElementById('logCount').textContent=j.total+' logs';return}lastLogsText=text;const el=document.getElementById('logs');const wasBottom=(el.scrollHeight-el.scrollTop-el.clientHeight)<60;el.textContent=text;document.getElementById('logCount').textContent=j.total+' logs';if(document.getElementById('autoScroll').checked||wasBottom)el.scrollTop=el.scrollHeight;}catch(e){}}
+function clearLogs(){lastLogsText=null;document.getElementById('logs').textContent='(cleared — new logs will appear)'}
+async function mgrNext(){try{const j=await api('/ui/api/manager/next',{method:'POST',body:'{}'});toast(j.msg+' ✅');loadManager()}catch(e){toast(e.message,false)}}
+async function mgrToggle(n,on){try{await api('/ui/api/manager/slot/'+n,{method:'POST',body:JSON.stringify({attached:on})});toast('/like'+n+' main API: '+(on?'ON ✅':'OFF ❌'));loadManager()}catch(e){toast(e.message,false)}}
+async function mgrSetLimit(n){try{const el=document.getElementById('mgrLim'+n);if(!el){toast('Limit field not found',false);return}const v=(el.value||'').trim();const num=Number(v);if(!v||!Number.isFinite(num)||!Number.isInteger(num)||num<1||num>100000){toast('Limit must be a whole number 1–100000',false);return}await api('/ui/api/manager/slot/'+n,{method:'POST',body:JSON.stringify({limit:num})});toast('/like'+n+' limit → '+num+' ✅');loadManager()}catch(e){toast(e.message,false)}}
+async function mgrResetSlot(n){try{await api('/ui/api/manager/slot/'+n,{method:'POST',body:JSON.stringify({reset:true})});toast('/like'+n+' usage reset ✅');loadManager()}catch(e){toast(e.message,false)}}
+async function mgrResetAll(){if(!confirm('সব API-র usage reset করবা?'))return;try{const j=await api('/ui/api/manager/reset-all',{method:'POST',body:'{}'});toast(j.msg+' ✅');loadManager()}catch(e){toast(e.message,false)}}
+async function mgrSaveSettings(){try{await api('/ui/api/manager/settings',{method:'POST',body:JSON.stringify({auto_attach_new:document.getElementById('mgrAutoAttach').checked,default_limit:parseInt(document.getElementById('mgrDefLimit').value)||30,alerts_enabled:document.getElementById('mgrAlerts').checked,pool_size:parseInt(document.getElementById('mgrPool').value)||3})});toast('Manager settings saved ✅');mgrDirty={};loadManager()}catch(e){toast(e.message,false)}}
+async function mgrMove(n,dir){try{await api('/ui/api/manager/slot/'+n+'/move',{method:'POST',body:JSON.stringify({dir})});loadManager()}catch(e){toast(e.message,false)}}
+async function mgrTest(n){try{const j=await api('/ui/api/manager/slot/'+n+'/test',{method:'POST',body:'{}'});toast(j.msg);setTimeout(loadManager,4000);setTimeout(loadManager,12000)}catch(e){toast(e.message,false)}}
+async function mgrCreateKey(){const name=document.getElementById('keyName').value.trim();const type=document.getElementById('keyType').value.trim().toLowerCase();const limit=parseInt(document.getElementById('keyLimit').value);const duration=document.getElementById('keyDur').value.trim()||'no';if(!name||!limit){toast('Key name আর limit দাও',false);return}try{const j=await api('/ui/api/keys',{method:'POST',body:JSON.stringify({name,type,limit,duration})});toast('Key created: '+j.key+' ✅');document.getElementById('keyName').value='';loadManager()}catch(e){toast(e.message,false)}}
+async function mgrRevokeKey(name){if(!confirm('Key '+name+' revoke করবা?'))return;try{await api('/ui/api/keys/'+encodeURIComponent(name),{method:'DELETE'});toast('Key revoked ✅');loadManager()}catch(e){toast(e.message,false)}}
+async function mgrRestore(){const inp=document.getElementById('mgrRestoreFile');if(!inp.files||!inp.files[0]){toast('আগে backup .json file choose করো',false);return}if(!confirm('Backup restore করলে এখনকার সব key/limit/setting বদলে যাবে। নিশ্চিত?'))return;const fd=new FormData();fd.append('file',inp.files[0]);try{const r=await fetch('/ui/api/manager/state-import',{method:'POST',body:fd});const j=await r.json();if(!r.ok)throw new Error(j.error||('HTTP '+r.status));toast(j.msg);inp.value='';loadManager()}catch(e){toast(e.message,false)}}
+loadAll();loadLogs();setInterval(loadLogs,10000);setInterval(loadAll,15000);
+document.addEventListener('visibilitychange',()=>{if(!document.hidden){loadLogs();loadAll();}});
+</script></body></html>
